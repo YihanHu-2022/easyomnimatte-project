@@ -13,7 +13,7 @@
   <style>
     /* --- 基础样式 --- */
     body {
-      font-family: 'Google Sans', sans-serif;
+      font-family: sans-serif;
       background-color: #f7f9fb;
       color: #333;
       line-height: 1.6;
@@ -36,7 +36,7 @@
     }
     
     h1.title {
-      font-size: 2.5rem;
+      font-size: 2rem;
       font-weight: 800;
       margin-bottom: 10px;
     }
@@ -197,12 +197,9 @@
     /* --- 轮播图 (Carousel) 容器样式 --- */
     .carousel-container {
       position: relative;
-      max-width: 800px; /* 限制轮播图最大宽度，可自行调整 */
       margin: 0 auto;   /* 居中 */
       overflow: hidden; /* 隐藏溢出的部分 */
       border-radius: 10px;
-      background: #000; /* 视频背景通常用黑色 */
-      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
     }
 
     /* 轨道：包含所有幻灯片的长条 */
@@ -286,6 +283,53 @@
       background-color: #333;
     }
 
+    /* --- 12图纯图片网格 --- */
+    .image-gallery {
+      display: grid;
+      /* 强制 4 列 */
+      grid-template-columns: repeat(4, 1fr); 
+      /* 图片之间的间距，可根据需要调整为 5px 或 15px */
+      gap: 10px; 
+      margin-top: 20px;
+      margin-bottom: 30px;
+    }
+
+    .gallery-img {
+      width: 100%;
+      height: auto; /* 保持原始比例 */
+      display: block;
+      border-radius: 4px; /* 圆角 */
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      cursor: pointer; /* 鼠标放上去变手型 */
+    }
+
+    /* 鼠标悬停时的微交互：轻微放大 + 阴影 */
+    .gallery-img:hover {
+      transform: scale(1.05);
+      z-index: 2; /* 保证放大的图片盖住旁边的 */
+      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    }
+
+    /* 手机端适配：自动变 2 列 */
+    @media (max-width: 768px) {
+      .image-gallery {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    /* 可选：如果你想给每一行加个小标题 */
+    .row-caption {
+      grid-column: 1 / -1; /* 跨越所有列 */
+      text-align: left;
+      font-weight: bold;
+      margin-top: 15px;
+      margin-bottom: 5px;
+      color: #555;
+      font-size: 1.1rem;
+      border-bottom: 1px solid #eee;
+      padding-bottom: 5px;
+    }
+
     /* --- Ablation 导航 (保持不变) --- */
     .ablation-nav {
       display: flex;
@@ -321,7 +365,7 @@
     /* 顶部表头：空 + Scene 1 + Scene 2 */
     .grid-header {
       display: grid;
-      grid-template-columns: 40px 1fr 1fr; /* 对应下方的 row 结构 */
+      grid-template-columns: 1fr 1fr 1fr; /* 对应下方的 row 结构 */
       gap: 15px;
       text-align: center;
       font-weight: bold;
@@ -362,7 +406,9 @@
       border-radius: 4px;
       box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     }
-
+    .authors a {
+      color: brown;
+    }
   </style>
 </head>
 <body>
@@ -371,17 +417,18 @@
 
   <!-- 1. 头部信息 -->
   <div class="header-section">
-    <h1 class="title">EasyOmnimatte: Taming Pretrained Inpainting Diffusion Models for End-to-End Video Layered Decomposition</h1>
+    <h1 class="title"><a style="color: #e37133;">EasyOmnimatte</a>: Taming Pretrained Inpainting Diffusion Models for End-to-End Video Layered Decomposition</h1>
     
     <div class="authors">
-      <a href="#">Yihan Hu</a><sup>1</sup>, 
-      <a href="#">Xuelin Chen</a><sup>2</sup>, 
-      <a href="#">Xiaodong Cun</a><sup>1</sup>
+      <a href="#">Yihan Hu<sup>1</sup></a> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;   
+      <a href="https://xuelin-chen.github.io/">Xuelin Chen<sup>2</sup></a> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  
+      <a href="https://vinthony.github.io/">Xiaodong Cun<sup>1,*</sup></a>
     </div>
 
     <div class="affiliations">
-      <sup>1</sup>GVC Lab, Great Bay University, <sup>2</sup>Adobe Research
+      <sup>1</sup> GVC Lab, Great Bay University &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <sup>2</sup> Adobe Research
     </div>
+
 
     <!-- 各种链接按钮 -->
     <div class="link-buttons">
@@ -391,12 +438,16 @@
     </div>
   </div>
 
+  <div style="text-align: center; color: brown; font-weight: 700; font-size: large;"> TL;DR: EasyOmnimatte split videos into layers (with effects) using 2 step diffusion <i>without any post optimization</i>. </div>
+  <div style="text-align: center;">
+      <!-- 占位图片，请替换为 static/images/pipeline.png -->
+      <img src="static/images/compare.jpg" alt="Method" style="max-width: 100%; border-radius: 8px;">
+    </div>
+
     <!-- 轮播图展示部分 -->
   <div class="section">
     <h2 class="section-title">Gallery Results</h2>
-    <div class="content-block" style="text-align: center; margin-bottom: 20px;">
-      <p>Click the arrows to browse through different scenarios.</p>
-    </div>
+
 
     <!-- 轮播组件主体 -->
     <div class="carousel-container">
@@ -479,6 +530,9 @@
       <button class="carousel-btn next" onclick="moveSlide(1)">
         <i class="fas fa-chevron-right"></i>
       </button>
+          <div class="content-block" style="text-align: center;">
+      <p>Click the arrows to browse through different scenarios.</p>
+    </div>
     </div>
 
     <!-- 指示点 (根据视频数量增减) -->
@@ -519,21 +573,7 @@
     </div>
   </div>  
 
-  <!-- 2. Teaser (核心展示视频) -->
-  <div class="section">
-    <!-- 
-      注意：autoplay loop muted playsinline 是为了让视频像GIF一样自动播放 
-      playsinline 是iOS设备必须的
-    -->
-    <video class="teaser-video" autoplay loop muted playsinline>
-      <!-- 这里放你的视频路径，先用网图占位 -->
-      <source src="static/videos/cvpr_supp_video.mp4" type="video/mp4">
-      Your browser does not support the video tag.
-    </video>
-    <div style="text-align: center; margin-top: 10px; color: #555;">
-      <b>Figure 1.</b> EasyOmnimatte is the first, end-to-end video omnimatte method, eliminating the need for slow, multi-stage optimization-based pipelines (e.g., Gen-Omnimatte). EasyOmnimatte produces high-fidelity alpha mattes that accurately capture the associated effects, all within just seconds, representing significant gain over existing state-of-the-art methods in both quality and efficiency.
-    </div>
-  </div>
+
 
   <!-- 5. 视频结果展示 -->
   <div class="section">
@@ -703,138 +743,52 @@
   </div>
 
   <div class="section">
+    <h2 class="section-title">Applications</h2>
+    <p style="text-align: center; color: #666; margin-bottom: 20px;">
+      We showcase some applications supported by Video Layering, i.e., editing a specific video layer. 
+    </p>
+
+    <div class="container">
+      <div class="image-gallery">
+        
+        <!-- 第 1 行 -->
+         <div class="row-caption">Application 1: Foreground Stylization</div>
+        <img src="static/images/0-0.png" class="gallery-img" alt="Result 1">
+        <img src="static/images/0-1.png" class="gallery-img" alt="Result 2">
+        <img src="static/images/0-2.png" class="gallery-img" alt="Result 3">
+        <img src="static/images/0-3.png" class="gallery-img" alt="Result 4">
+
+        <!-- 第 2 行 -->
+         <div class="row-caption">Application 2: Foreground Focusing with background Blur</div>
+        <img src="static/images/1-0.png" class="gallery-img" alt="Result 5">
+        <img src="static/images/1-1.png" class="gallery-img" alt="Result 6">
+        <img src="static/images/1-2.png" class="gallery-img" alt="Result 7">
+        <img src="static/images/1-3.png" class="gallery-img" alt="Result 8">
+
+        <!-- 第 3 行 -->
+         <div class="row-caption">Application 3: Fun Editing of Dynamic Character Outlines</div>
+        <img src="static/images/2-0.png" class="gallery-img" alt="Result 9">
+        <img src="static/images/2-1.png" class="gallery-img" alt="Result 10">
+        <img src="static/images/2-2.png" class="gallery-img" alt="Result 11">
+        <img src="static/images/2-3.png" class="gallery-img" alt="Result 12">
+
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
   <h2 class="section-title">Ablation Study</h2>
   <p style="text-align: center; margin-bottom: 25px;">
     Effectiveness of different attention masking strategies.
   </p>
 
-  <!-- 1. 顶部导航 -->
-  <div class="ablation-nav">
-    <div class="mask-btn active" onclick="showAblation('set-a', this)">
-      <img src="static/images/type_a.png" alt="Mask A">
-      <div>Mask A</div>
-    </div>
-    <div class="mask-btn" onclick="showAblation('set-b', this)">
-      <img src="static/images/type_b.png" alt="Mask B">
-      <div>Mask B</div>
-    </div>
-    <div class="mask-btn" onclick="showAblation('set-c', this)">
-      <img src="static/images/type_c.png" alt="Mask C">
-      <div>Mask C</div>
-    </div>
-  </div>
-
-  <!-- 2. 内容区域 -->
-
-  <!-- === SET A (Mask A 对应的8个视频) === -->
-  <div id="set-a" class="ablation-group active">
-    
-    <!-- 表头 -->
-    <!-- <div class="grid-header">
-      <div></div>
-      <div>Scene 1</div>
-      <div>Scene 2</div>
-    </div> -->
-
-    <!-- Row 1: Input -->
-    <div class="grid-row">
-      <div class="row-label">Input Video</div>
-      <video autoplay loop muted playsinline src="static/videos/scene1_input.mp4"></video>
-      <video autoplay loop muted playsinline src="static/videos/scene2_input.mp4"></video>
-    </div>
-
-    <!-- Row 2: Type 1 -->
-    <div class="grid-row">
-      <div class="row-label">Inpainting Background</div>
-      <video autoplay loop muted playsinline src="static/videos/scene1_bg_a.mp4"></video>
-      <video autoplay loop muted playsinline src="static/videos/scene2_bg_a.mp4"></video>
-    </div>
-
-    <!-- Row 3: Type 2 -->
-    <div class="grid-row">
-      <div class="row-label">Effect Expert Only</div>
-      <video autoplay loop muted playsinline src="static/videos/scene1_effect_a.mp4"></video>
-      <video autoplay loop muted playsinline src="static/videos/scene2_effect_a.mp4"></video>
-    </div>
-
-    <!-- Row 4: Ours -->
-    <div class="grid-row">
-      <div class="row-label">Quality Expert Only</div>
-      <video autoplay loop muted playsinline src="static/videos/scene1_quality_a.mp4"></video>
-      <video autoplay loop muted playsinline src="static/videos/scene2_quality_a.mp4"></video>
-    </div>
-
-  </div>
-
-  <!-- === SET B (Mask B 对应的8个视频) === -->
-  <div id="set-b" class="ablation-group">
-    <!-- <div class="grid-header">
-      <div></div>
-      <div>Scene 1</div>
-      <div>Scene 2</div>
-    </div> -->
-
-    <!-- Row 1: Input -->
-    <div class="grid-row">
-      <div class="row-label">Input Video</div>
-      <video autoplay loop muted playsinline src="static/videos/scene1_input.mp4"></video>
-      <video autoplay loop muted playsinline src="static/videos/scene2_input.mp4"></video>
-    </div>
-
-    <!-- Row 2: Type 1 -->
-    <div class="grid-row">
-      <div class="row-label">Inpainting Background</div>
-      <video autoplay loop muted playsinline src="static/videos/scene1_bg_b.mp4"></video>
-      <video autoplay loop muted playsinline src="static/videos/scene2_bg_b.mp4"></video>
-    </div>
-
-    <!-- Row 3: Type 2 -->
-    <div class="grid-row">
-      <div class="row-label"  style="color: #008000;">Effect Expert</div>
-      <video autoplay loop muted playsinline src="static/videos/scene1_effect_b.mp4"></video>
-      <video autoplay loop muted playsinline src="static/videos/scene2_effect_b.mp4"></video>
-    </div>
-
-    <!-- Row 4: Ours -->
-    <div class="grid-row">
-      <div class="row-label">Quality Expert</div>
-      <video autoplay loop muted playsinline src="static/videos/scene1_quality_b.mp4"></video>
-      <video autoplay loop muted playsinline src="static/videos/scene2_quality_b.mp4"></video>
-    </div>
-
-  </div>
-
-  <!-- === SET C (同理) === -->
-  <div id="set-c" class="ablation-group">
-     
-    <!-- Row 1: Input -->
-    <div class="grid-row">
-      <div class="row-label">Input Video</div>
-      <video autoplay loop muted playsinline src="static/videos/scene1_input.mp4"></video>
-      <video autoplay loop muted playsinline src="static/videos/scene2_input.mp4"></video>
-    </div>
-
-    <!-- Row 2: Type 1 -->
-    <div class="grid-row">
-      <div class="row-label">Inpainting Background</div>
-      <video autoplay loop muted playsinline src="static/videos/scene1_bg_c.mp4"></video>
-      <video autoplay loop muted playsinline src="static/videos/scene2_bg_c.mp4"></video>
-    </div>
-
-    <!-- Row 3: Type 2 -->
-    <div class="grid-row">
-      <div class="row-label">Effect Expert</div>
-      <video autoplay loop muted playsinline src="static/videos/scene1_effect_c.mp4"></video>
-      <video autoplay loop muted playsinline src="static/videos/scene2_effect_c.mp4"></video>
-    </div>
-
-    <!-- Row 4: Ours -->
-    <div class="grid-row">
-      <div class="row-label" style="color: #008000;">Quality Expert</div>
-      <video autoplay loop muted playsinline src="static/videos/scene1_quality_c.mp4"></video>
-      <video autoplay loop muted playsinline src="static/videos/scene2_quality_c.mp4"></video>
-    </div>
-
+  <div class="comparison-container">
+    <!-- 直接复用 .three-col-grid 类 -->
+       <video class="teaser-video" autoplay loop muted playsinline>
+      <!-- 这里放你的视频路径，先用网图占位 -->
+      <source src="static/videos/ablation_mask_v2.mp4" type="video/mp4">
+      Your browser does not support the video tag.
+    </video>
   </div>
 
   <p style="text-align: center; margin-bottom: 25px;">
@@ -843,57 +797,12 @@
 
   <div class="comparison-container">
     <!-- 直接复用 .three-col-grid 类 -->
-      
-    <div class="grid-header">
-      <div></div>
-      <div>RGBA Video</div>
-      <div>Alpha Matte</div>
-    </div>
-
-    <!-- 修改左侧标签 -->
-    <div class="grid-row">
-      <div class="row-label">Input Videos & Masks</div>
-      <video class="grid-video" autoplay loop muted playsinline src="static/videos/kw_input_video.mp4"></video>
-      <video class="grid-video" autoplay loop muted playsinline src="static/videos/kw_input_mask.mp4"></video>
-    </div>
-
-    <!-- Ours 依然可以用绿色高亮 -->
-    <div class="grid-row">
-      <div class="row-label">Branch DiT only in <i>Initial Stage</i></div>
-      <video class="grid-video" autoplay loop muted playsinline src="static/videos/kw_initial_rgba.mp4"></video>
-      <video class="grid-video" autoplay loop muted playsinline src="static/videos/kw_initial_matte.mp4"></video>
-    </div>
-
-    <!-- Ours 依然可以用绿色高亮 -->
-    <div class="grid-row">
-      <div class="row-label">Branch DiT only in <i>Middle Stage</i></div>
-      <video class="grid-video" autoplay loop muted playsinline src="static/videos/kw_middle_rgba.mp4"></video>
-      <video class="grid-video" autoplay loop muted playsinline src="static/videos/kw_middle_matte.mp4"></video>
-    </div>
-
-    <!-- Ours 依然可以用绿色高亮 -->
-    <div class="grid-row">
-      <div class="row-label">Branch DiT only in <i>Final Stage</i><br> <b>(Effect Expert)</b></div>
-      <video class="grid-video" autoplay loop muted playsinline src="static/videos/kw_final_rgba.mp4"></video>
-      <video class="grid-video" autoplay loop muted playsinline src="static/videos/kw_final_matte.mp4"></video>
-    </div>
-
-    <!-- Ours 依然可以用绿色高亮 -->
-    <div class="grid-row">
-      <div class="row-label"><b>Quality Expert</b></div>
-      <video class="grid-video" autoplay loop muted playsinline src="static/videos/kw_quality_rgba.mp4"></video>
-      <video class="grid-video" autoplay loop muted playsinline src="static/videos/kw_quality_matte.mp4"></video>
-    </div>
-
-    <!-- Ours 依然可以用绿色高亮 -->
-    <div class="grid-row">
-      <div class="row-label">Full Method</div>
-      <video class="grid-video" autoplay loop muted playsinline src="static/videos/kw_full_rgba.mp4"></video>
-      <video class="grid-video" autoplay loop muted playsinline src="static/videos/kw_full_matte.mp4"></video>
-    </div>
-
-</div>
-
+       <video class="teaser-video" autoplay loop muted playsinline>
+      <!-- 这里放你的视频路径，先用网图占位 -->
+      <source src="static/videos/ablation_of_dual.mp4" type="video/mp4">
+      Your browser does not support the video tag.
+    </video>
+  </div>
   <!-- 6. BibTeX -->
   <div class="section">
     <h2 class="section-title">Citation</h2>
